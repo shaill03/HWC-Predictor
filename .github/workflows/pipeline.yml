@@ -31,10 +31,13 @@ jobs:
 
       - name: Commit and Push the Updated Map
         run: |
-          git config --global --add safe.directory /__w/HWC-Predictor/HWC-Predictor
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config --global user.name 'HWC-Bot'
           git config --global user.email 'bot@hwc-predictor.com'
           git add docs/index.html
-          git commit -m "Automated update of HWC Risk Map" |
-|| echo "No changes to commit"
-          git push
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit"
+          else
+            git commit -m "Automated update of HWC Risk Map"
+            git push
+          fi
