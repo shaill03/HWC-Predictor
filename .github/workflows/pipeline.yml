@@ -18,12 +18,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Inject Google Earth Engine Credentials
-        run: |
-          echo '${{ secrets.EE_SERVICE_ACCOUNT_JSON }}' > ee_auth.json
+        run: echo '${{ secrets.EE_SERVICE_ACCOUNT_JSON }}' > ee_auth.json
 
       - name: Install remaining R packages
-        run: |
-          install.packages(c("rgee", "randomForest", "leaflet", "htmlwidgets", "osmdata"))
+        run: install.packages(c("rgee", "randomForest", "leaflet", "htmlwidgets", "osmdata"))
         shell: Rscript {0}
 
       - name: Run Master Pipeline
@@ -31,13 +29,13 @@ jobs:
 
       - name: Commit and Push the Updated Map
         run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config --global user.name 'HWC-Bot'
-          git config --global user.email 'bot@hwc-predictor.com'
+          git config --global --add safe.directory "*"
+          git config --global user.name "HWC-Bot"
+          git config --global user.email "bot@hwc-predictor.com"
           git add docs/index.html
-          if git diff-index --quiet HEAD; then
-            echo "No changes to commit"
-          else
-            git commit -m "Automated update of HWC Risk Map"
-            git push
-          fi
+          git commit -m "Automated update of HWC Risk Map" |
+
+| true
+          git push |
+
+| true
