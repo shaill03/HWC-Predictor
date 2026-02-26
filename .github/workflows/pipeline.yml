@@ -1,0 +1,41 @@
+name: HWC Automated Pipeline
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # This runs every Sunday at midnight.
+  workflow_dispatch: # This allows you to click a button to run it manually.
+
+permissions:
+  contents: write # Allows the bot to save the new map back to your repository
+
+jobs:
+  update-hotspot-map:
+    runs-on: ubuntu-latest
+    container: rocker/geospatial:latest # An environment pre-loaded with heavy spatial packages
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Inject Google Earth Engine Credentials
+        run: |
+          echo '${{ secrets.EE_SERVICE_ACCOUNT_JSON }}' > ee_auth.json
+
+      - name: Install remaining R packages
+        run: |
+          install.packages(c("rgee", "randomForest", "leaflet", "htmlwidgets", "osmdata"))
+        shell: Rscript {0}
+
+      - name: Run Master Pipeline
+        run: Rscript hwc_pipeline.R
+
+      - name: Commit and Push the Updated Map
+        run: |
+          git config --global --add safe.directory /__w/HWC-Predictor/HWC-Predictor
+          git config --global user.name 'HWC-Bot'
+          git config --global user.email 'bot@hwc-predictor.com'
+          git add docs/index.html
+          git commit -m "Automated update of HWC Risk Map" |
+
+| echo "No changes to commit"
+          git push
