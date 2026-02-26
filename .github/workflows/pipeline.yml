@@ -36,6 +36,5 @@ jobs:
           git config --global user.email 'bot@hwc-predictor.com'
           git add docs/index.html
           git commit -m "Automated update of HWC Risk Map" |
-
  echo "No changes to commit"
           git push
